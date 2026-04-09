@@ -6,7 +6,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM tomcat:10.1.20-jdk21-temurin-jammy
+FROM tomcat:9.0-jdk21-temurin
 LABEL maintainer="kastrov"
 LABEL version="2.0.0"
 LABEL description="Amazon Prime Video Clone Application"
@@ -24,6 +24,11 @@ USER tomcat
 
 # Expose Tomcat port
 EXPOSE 8080
+
+# Optional: Install curl for health check
+USER root
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+USER tomcat
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
